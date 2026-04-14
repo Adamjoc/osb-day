@@ -360,6 +360,11 @@
   <button onclick="showSection('lesson')">Teaching</button>
   <button onclick="showSection('written')">Written Task</button>
 </nav>
+<div id="voice-bar" style="background:#0A1520; padding:0.5rem 1rem; display:flex; align-items:center; gap:0.8rem; flex-wrap:wrap; border-bottom:1px solid #1C3550;">
+  <span style="font-family:Calibri,sans-serif; font-size:0.78rem; color:#8A9BB0; white-space:nowrap;">🎙 Voice:</span>
+  <select id="voice-select" style="background:#162B40; color:#52B788; border:1px solid #2D6A4F; border-radius:12px; padding:0.25rem 0.6rem; font-family:Calibri,sans-serif; font-size:0.78rem; cursor:pointer; max-width:280px;"></select>
+  <span style="font-family:Calibri,sans-serif; font-size:0.75rem; color:#555; font-style:italic;">Choose the most natural British male voice</span>
+</div>
 
 <main>
 
@@ -1084,6 +1089,79 @@ function toggleScript(id) {
 let currentUtterance = null;
 let currentProgressInterval = null;
 let currentProgressEl = null;
+let selectedVoice = null;
+let currentPlayBtn = null;
+
+// Priority order for British male voices by name
+const PREFERRED_VOICE_NAMES = [
+  'daniel',      // Apple British male — best quality
+  'oliver',      // Some Windows/Chrome setups
+  'arthur',      // Microsoft British male
+  'george',
+  'james',
+  'harry',
+  'thomas',
+  'rishi',       // Google British
+  'en-gb',
+];
+
+function getBestVoice() {
+  const voices = window.speechSynthesis.getVoices();
+  if (!voices.length) return null;
+
+  // 1. Exact name match for known high-quality British male voices
+  for (const name of PREFERRED_VOICE_NAMES) {
+    const match = voices.find(v => v.name.toLowerCase().includes(name) && v.lang.startsWith('en'));
+    if (match) return match;
+  }
+
+  // 2. Any en-GB voice that isn't obviously female
+  const femaleWords = ['female', 'woman', 'girl', 'kate', 'serena', 'susan', 'karen', 'moira', 'fiona', 'tessa', 'veena'];
+  const gbMale = voices.find(v =>
+    v.lang === 'en-GB' && !femaleWords.some(f => v.name.toLowerCase().includes(f))
+  );
+  if (gbMale) return gbMale;
+
+  // 3. Any en-GB voice
+  const gb = voices.find(v => v.lang === 'en-GB');
+  if (gb) return gb;
+
+  // 4. Any English voice
+  return voices.find(v => v.lang.startsWith('en')) || null;
+}
+
+function populateVoicePicker() {
+  const select = document.getElementById('voice-select');
+  if (!select) return;
+  const voices = window.speechSynthesis.getVoices();
+  const english = voices.filter(v => v.lang.startsWith('en'));
+  select.innerHTML = '';
+  english.forEach((v, i) => {
+    const opt = document.createElement('option');
+    opt.value = i;
+    opt.textContent = `${v.name} (${v.lang})`;
+    select.appendChild(opt);
+  });
+
+  // Auto-select best voice
+  const best = getBestVoice();
+  if (best) {
+    const idx = english.indexOf(best);
+    if (idx >= 0) select.value = idx;
+    selectedVoice = best;
+  }
+
+  select.onchange = () => {
+    selectedVoice = english[parseInt(select.value)];
+    // Preview the voice
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance("Hello Adam. Good luck tomorrow.");
+    u.voice = selectedVoice;
+    u.rate = 0.88;
+    u.pitch = 0.95;
+    window.speechSynthesis.speak(u);
+  };
+}
 
 function speakText(scriptId, btn) {
   const scriptEl = document.getElementById(scriptId);
@@ -1091,61 +1169,52 @@ function speakText(scriptId, btn) {
   const text = scriptEl.textContent.trim();
   if (!text) return;
 
-  // Stop any current speech
+  // Stop if already speaking this button
   if (window.speechSynthesis.speaking) {
     window.speechSynthesis.cancel();
     if (currentProgressInterval) clearInterval(currentProgressInterval);
     if (currentProgressEl) currentProgressEl.style.width = '0%';
-    if (btn.dataset.speaking === 'true') {
-      btn.innerHTML = '▶';
-      btn.dataset.speaking = '';
-      return;
-    }
+    if (currentPlayBtn) { currentPlayBtn.innerHTML = '▶'; currentPlayBtn.dataset.speaking = ''; }
+    if (btn === currentPlayBtn) return; // toggle off
   }
 
   const sectionId = scriptId.replace('-script', '');
   const progressEl = document.getElementById(sectionId + '-progress');
   currentProgressEl = progressEl;
+  currentPlayBtn = btn;
 
   const utterance = new SpeechSynthesisUtterance(text);
-  utterance.rate = 0.88;
-  utterance.pitch = 0.95;
+  utterance.rate = 0.86;
+  utterance.pitch = 0.92;
   utterance.volume = 1;
 
-  // Try to find a British male voice
-  const voices = window.speechSynthesis.getVoices();
-  const preferred = voices.find(v =>
-    (v.lang === 'en-GB' && v.name.toLowerCase().includes('male')) ||
-    v.name.toLowerCase().includes('daniel') ||
-    v.name.toLowerCase().includes('oliver') ||
-    (v.lang === 'en-GB' && !v.name.toLowerCase().includes('female'))
-  ) || voices.find(v => v.lang === 'en-GB') || voices.find(v => v.lang.startsWith('en'));
+  const voice = selectedVoice || getBestVoice();
+  if (voice) utterance.voice = voice;
 
-  if (preferred) utterance.voice = preferred;
-
-  // Animate progress bar
-  const estimatedDuration = (text.split(' ').length / 140) * 60 * 1000;
+  // Progress animation
+  const estimatedDuration = (text.split(' ').length / 130) * 60 * 1000;
   let elapsed = 0;
   if (progressEl) progressEl.style.width = '0%';
 
   currentProgressInterval = setInterval(() => {
-    elapsed += 200;
-    const pct = Math.min(95, (elapsed / estimatedDuration) * 100);
+    elapsed += 300;
+    const pct = Math.min(93, (elapsed / estimatedDuration) * 100);
     if (progressEl) progressEl.style.width = pct + '%';
-  }, 200);
+  }, 300);
 
   utterance.onend = () => {
     clearInterval(currentProgressInterval);
-    if (progressEl) progressEl.style.width = '100%';
-    setTimeout(() => { if (progressEl) progressEl.style.width = '0%'; }, 1500);
+    if (progressEl) { progressEl.style.width = '100%'; setTimeout(() => { progressEl.style.width = '0%'; }, 1500); }
     btn.innerHTML = '▶';
     btn.dataset.speaking = '';
+    currentPlayBtn = null;
   };
 
   utterance.onerror = () => {
     clearInterval(currentProgressInterval);
     btn.innerHTML = '▶';
     btn.dataset.speaking = '';
+    currentPlayBtn = null;
   };
 
   btn.innerHTML = '⏸';
@@ -1154,9 +1223,14 @@ function speakText(scriptId, btn) {
   window.speechSynthesis.speak(utterance);
 }
 
-// Ensure voices are loaded
-window.speechSynthesis.onvoiceschanged = () => {};
-window.speechSynthesis.getVoices();
+// Load voices — may fire asynchronously
+window.speechSynthesis.onvoiceschanged = () => {
+  populateVoicePicker();
+};
+// Trigger immediately in case already loaded
+if (window.speechSynthesis.getVoices().length > 0) {
+  populateVoicePicker();
+}
 </script>
 
 </body>
