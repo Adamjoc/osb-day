@@ -360,10 +360,9 @@
   <button onclick="showSection('lesson')">Teaching</button>
   <button onclick="showSection('written')">Written Task</button>
 </nav>
-<div id="voice-bar" style="background:#0A1520; padding:0.5rem 1rem; display:flex; align-items:center; gap:0.8rem; flex-wrap:wrap; border-bottom:1px solid #1C3550;">
+<div id="voice-bar" style="background:#0A1520; padding:0.45rem 1rem; display:flex; align-items:center; gap:0.8rem; border-bottom:1px solid #1C3550;">
   <span style="font-family:Calibri,sans-serif; font-size:0.78rem; color:#8A9BB0; white-space:nowrap;">🎙 Voice:</span>
-  <select id="voice-select" style="background:#162B40; color:#52B788; border:1px solid #2D6A4F; border-radius:12px; padding:0.25rem 0.6rem; font-family:Calibri,sans-serif; font-size:0.78rem; cursor:pointer; max-width:280px;"></select>
-  <span style="font-family:Calibri,sans-serif; font-size:0.75rem; color:#555; font-style:italic;">Choose the most natural British male voice</span>
+  <span id="voice-label" style="font-family:Calibri,sans-serif; font-size:0.78rem; color:#52B788; font-style:italic;">Loading Microsoft Ryan...</span>
 </div>
 
 <main>
@@ -389,8 +388,8 @@
         <div class="progress-bar"><div class="progress-fill" id="overview-progress"></div></div>
       </div>
     </div>
-    <button class="toggle-script" onclick="toggleScript('overview-text')">Show script</button>
-    <div class="speech-text" id="overview-text">Good morning, Adam. Today is the day.
+    <button class="toggle-script" onclick="toggleScript('overview-script')">Show script</button>
+    <div class="speech-text" id="overview-script">Good morning, Adam. Today is the day.
 
 You have spent twenty years becoming exactly the person they need. You grew up in South London — working class, bursary boy at Whitgift — and you know, in your bones, what it means when a school opens a door for a child. That is not a biographical detail. That is your north star, and it will carry you through every room you walk into today.
 
@@ -465,8 +464,8 @@ You have prepared. The lesson is sent. The crib sheets are in your head. Now bre
         <div class="progress-bar"><div class="progress-fill" id="context-progress"></div></div>
       </div>
     </div>
-    <button class="toggle-script" onclick="toggleScript('context-text')">Show script</button>
-    <div class="speech-text" id="context-text">Adam, you've been leading a Cambridge international school in Lisbon. That is not a gap — that is a perspective. But let's make sure you walk in with the current picture clear in your mind.
+    <button class="toggle-script" onclick="toggleScript('context-script')">Show script</button>
+    <div class="speech-text" id="context-script">Adam, you've been leading a Cambridge international school in Lisbon. That is not a gap — that is a perspective. But let's make sure you walk in with the current picture clear in your mind.
 
 First: Progress 8. The headline measure has been suspended for 2024-25 and 2025-26. The reason is simple: the cohort sitting GCSEs now had their Key Stage 2 SATs cancelled in 2020 due to COVID — so there is no prior attainment baseline to calculate against. Schools are currently being judged on Attainment 8 only, alongside the 2022-23 and 2023-24 Progress 8 scores as context. P8 returns in 2026-27. Longer term, the government is consulting on reforms to how A8 and P8 are calculated — dropping EBacc slots in favour of broader breadth from 2028-29. The key line for you: "I understand we're in a transitional period for accountability data. I'd want to build rich internal tracking that goes beyond headline measures — using progress data from baseline assessments, not just external proxies."
 
@@ -586,8 +585,8 @@ You are not behind. You have been working internationally, building curriculum, 
         <div class="progress-bar"><div class="progress-fill" id="welcome-progress"></div></div>
       </div>
     </div>
-    <button class="toggle-script" onclick="toggleScript('welcome-text')">Show script</button>
-    <div class="speech-text" id="welcome-text">Adam, you are walking into a school in South London. You have been here before — metaphorically and literally. You visited Oasis South Bank in 2020 and it moved you. Let that come through.
+    <button class="toggle-script" onclick="toggleScript('welcome-script')">Show script</button>
+    <div class="speech-text" id="welcome-script">Adam, you are walking into a school in South London. You have been here before — metaphorically and literally. You visited Oasis South Bank in 2020 and it moved you. Let that come through.
 
 When Anna greets you, slow down. You don't need to fill the space. A genuine smile, eye contact, and warmth. Let her set the tone for the opening conversation. Your role right now is to be curious and present — not to perform.
 
@@ -636,8 +635,8 @@ Then stop. Let it breathe. You don't need more than that to open.</div>
         <div class="progress-bar"><div class="progress-fill" id="walk-progress"></div></div>
       </div>
     </div>
-    <button class="toggle-script" onclick="toggleScript('walk-text')">Show script</button>
-    <div class="speech-text" id="walk-text">Adam, the learning walk is not an Ofsted inspection. Do not walk like an inspector. Walk like a Deputy who leads learning — curious, specific, developmental.
+    <button class="toggle-script" onclick="toggleScript('walk-script')">Show script</button>
+    <div class="speech-text" id="walk-script">Adam, the learning walk is not an Ofsted inspection. Do not walk like an inspector. Walk like a Deputy who leads learning — curious, specific, developmental.
 
 Here is your framework for every classroom. Strength first — what is genuinely strong in this room? Development point — one specific, actionable observation. Coaching conversation — how would you open that conversation with the teacher? Academy priority — how does this connect to the school's bigger work?
 
@@ -709,8 +708,8 @@ And here is the human note: look at the pupils the way you used to be looked at.
         <div class="progress-bar"><div class="progress-fill" id="vision-progress"></div></div>
       </div>
     </div>
-    <button class="toggle-script" onclick="toggleScript('vision-text')">Show script</button>
-    <div class="speech-text" id="vision-text">Adam, this is the most important conversation of the day. Anna and Lisa want to know: does this person understand what we are trying to do, and can they help us do it?
+    <button class="toggle-script" onclick="toggleScript('vision-script')">Show script</button>
+    <div class="speech-text" id="vision-script">Adam, this is the most important conversation of the day. Anna and Lisa want to know: does this person understand what we are trying to do, and can they help us do it?
 
 Oasis is a values-led trust. Their nine habits, their ethos of social purpose — these are not marketing copy. They mean them. So you need to meet them there.
 
@@ -784,8 +783,8 @@ One critical point: they want a Deputy, not a consultant. Show operational roote
         <div class="progress-bar"><div class="progress-fill" id="roleplay-progress"></div></div>
       </div>
     </div>
-    <button class="toggle-script" onclick="toggleScript('roleplay-text')">Show script</button>
-    <div class="speech-text" id="roleplay-text">Adam, the role play is designed to see how you handle pressure, ambiguity and interpersonal challenge. They are not looking for the perfect answer. They are looking for composure, humanity and professional judgement.
+    <button class="toggle-script" onclick="toggleScript('roleplay-script')">Show script</button>
+    <div class="speech-text" id="roleplay-script">Adam, the role play is designed to see how you handle pressure, ambiguity and interpersonal challenge. They are not looking for the perfect answer. They are looking for composure, humanity and professional judgement.
 
 Common scenarios: an angry parent, a difficult safeguarding boundary, a staff member in distress, a curriculum conflict, a challenging governor or trustee.
 
@@ -851,8 +850,8 @@ You've held safeguarding leads, you've built pastoral systems from scratch, you'
         <div class="progress-bar"><div class="progress-fill" id="lunch-progress"></div></div>
       </div>
     </div>
-    <button class="toggle-script" onclick="toggleScript('lunch-text')">Show script</button>
-    <div class="speech-text" id="lunch-text">Adam, this is the part of the day where you stop being a candidate and just be a person. These students have been selected because they're thoughtful and engaged. They will see through any performance immediately.
+    <button class="toggle-script" onclick="toggleScript('lunch-script')">Show script</button>
+    <div class="speech-text" id="lunch-script">Adam, this is the part of the day where you stop being a candidate and just be a person. These students have been selected because they're thoughtful and engaged. They will see through any performance immediately.
 
 Don't dominate the conversation. Ask questions and genuinely listen to the answers. Ask them what makes South Bank special. Ask what the best teachers here do. Ask what they wish more adults understood about them. Then listen — really listen — and respond to what they actually say, not what you expected them to say.
 
@@ -903,8 +902,8 @@ You don't need to impress them. Just be present. Eat your lunch. Laugh if someth
         <div class="progress-bar"><div class="progress-fill" id="lesson-progress"></div></div>
       </div>
     </div>
-    <button class="toggle-script" onclick="toggleScript('lesson-text')">Show script</button>
-    <div class="speech-text" id="lesson-text">Adam, the lesson is designed. The slides are sent. The A3 response sheets are ready as backup. You know this content deeply — you built it. Trust that.
+    <button class="toggle-script" onclick="toggleScript('lesson-script')">Show script</button>
+    <div class="speech-text" id="lesson-script">Adam, the lesson is designed. The slides are sent. The A3 response sheets are ready as backup. You know this content deeply — you built it. Trust that.
 
 Walk in with presence, not nerves. You are a senior educator who has observed hundreds of lessons. Now you're teaching one. The difference is that you care about these students, and that will come through.
 
@@ -1004,8 +1003,8 @@ You have prepared this lesson with more care than most teachers give most lesson
         <div class="progress-bar"><div class="progress-fill" id="written-progress"></div></div>
       </div>
     </div>
-    <button class="toggle-script" onclick="toggleScript('written-text')">Show script</button>
-    <div class="speech-text" id="written-text">Adam, the written task is likely to be a scenario requiring a strategic and operational response. It might be about attendance, SEND provision, curriculum underperformance, behaviour, or a data-driven challenge. Whatever it is, the structure is the same.
+    <button class="toggle-script" onclick="toggleScript('written-script')">Show script</button>
+    <div class="speech-text" id="written-script">Adam, the written task is likely to be a scenario requiring a strategic and operational response. It might be about attendance, SEND provision, curriculum underperformance, behaviour, or a data-driven challenge. Whatever it is, the structure is the same.
 
 Use this framework: Context — what is the situation and what do you understand about it? Key Issue — what is the root cause, not just the symptom? Immediate Actions — what do you do in the first 48 hours? Medium-Term Actions — what do you build over the next term? Risks — what could go wrong and how do you mitigate it? Success Measures — how will you know it's working?
 
@@ -1089,93 +1088,51 @@ function toggleScript(id) {
 let currentUtterance = null;
 let currentProgressInterval = null;
 let currentProgressEl = null;
-let selectedVoice = null;
 let currentPlayBtn = null;
 
-// Priority order for British male voices by name
-const PREFERRED_VOICE_NAMES = [
-  'daniel',      // Apple British male — best quality
-  'oliver',      // Some Windows/Chrome setups
-  'arthur',      // Microsoft British male
-  'george',
-  'james',
-  'harry',
-  'thomas',
-  'rishi',       // Google British
-  'en-gb',
-];
+// ── VOICE: hardcoded to Microsoft Ryan Natural (en-GB) ───────────
+const TARGET_VOICE_NAME = 'Microsoft Ryan Online (Natural)';
+let voiceReady = false;
 
-function getBestVoice() {
+function getRyanVoice() {
   const voices = window.speechSynthesis.getVoices();
-  if (!voices.length) return null;
-
-  // 1. Exact name match for known high-quality British male voices
-  for (const name of PREFERRED_VOICE_NAMES) {
-    const match = voices.find(v => v.name.toLowerCase().includes(name) && v.lang.startsWith('en'));
-    if (match) return match;
-  }
-
-  // 2. Any en-GB voice that isn't obviously female
-  const femaleWords = ['female', 'woman', 'girl', 'kate', 'serena', 'susan', 'karen', 'moira', 'fiona', 'tessa', 'veena'];
-  const gbMale = voices.find(v =>
-    v.lang === 'en-GB' && !femaleWords.some(f => v.name.toLowerCase().includes(f))
-  );
-  if (gbMale) return gbMale;
-
-  // 3. Any en-GB voice
-  const gb = voices.find(v => v.lang === 'en-GB');
-  if (gb) return gb;
-
-  // 4. Any English voice
-  return voices.find(v => v.lang.startsWith('en')) || null;
+  // Try exact match first
+  let v = voices.find(v => v.name === TARGET_VOICE_NAME);
+  // Fallback: anything with 'ryan' in the name
+  if (!v) v = voices.find(v => v.name.toLowerCase().includes('ryan'));
+  // Fallback: any en-GB male-ish voice
+  if (!v) v = voices.find(v => v.lang === 'en-GB' && !['kate','serena','susan','fiona','moira'].some(f => v.name.toLowerCase().includes(f)));
+  // Final fallback: any en-GB
+  if (!v) v = voices.find(v => v.lang === 'en-GB');
+  return v || null;
 }
 
-function populateVoicePicker() {
-  const select = document.getElementById('voice-select');
-  if (!select) return;
-  const voices = window.speechSynthesis.getVoices();
-  const english = voices.filter(v => v.lang.startsWith('en'));
-  select.innerHTML = '';
-  english.forEach((v, i) => {
-    const opt = document.createElement('option');
-    opt.value = i;
-    opt.textContent = `${v.name} (${v.lang})`;
-    select.appendChild(opt);
-  });
-
-  // Auto-select best voice
-  const best = getBestVoice();
-  if (best) {
-    const idx = english.indexOf(best);
-    if (idx >= 0) select.value = idx;
-    selectedVoice = best;
+function initVoice() {
+  const voice = getRyanVoice();
+  const label = document.getElementById('voice-label');
+  if (voice) {
+    voiceReady = true;
+    if (label) label.textContent = `✓ ${voice.name}`;
+  } else {
+    if (label) label.textContent = 'Voice loading...';
+    // Retry after a moment
+    setTimeout(initVoice, 500);
   }
-
-  select.onchange = () => {
-    selectedVoice = english[parseInt(select.value)];
-    // Preview the voice
-    window.speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance("Hello Adam. Good luck tomorrow.");
-    u.voice = selectedVoice;
-    u.rate = 0.88;
-    u.pitch = 0.95;
-    window.speechSynthesis.speak(u);
-  };
 }
 
 function speakText(scriptId, btn) {
   const scriptEl = document.getElementById(scriptId);
-  if (!scriptEl) return;
+  if (!scriptEl) { console.error('Script not found:', scriptId); return; }
   const text = scriptEl.textContent.trim();
-  if (!text) return;
+  if (!text) { console.error('No text in:', scriptId); return; }
 
-  // Stop if already speaking this button
+  // Stop if already speaking
   if (window.speechSynthesis.speaking) {
     window.speechSynthesis.cancel();
     if (currentProgressInterval) clearInterval(currentProgressInterval);
     if (currentProgressEl) currentProgressEl.style.width = '0%';
     if (currentPlayBtn) { currentPlayBtn.innerHTML = '▶'; currentPlayBtn.dataset.speaking = ''; }
-    if (btn === currentPlayBtn) return; // toggle off
+    if (btn === currentPlayBtn) { currentPlayBtn = null; return; }
   }
 
   const sectionId = scriptId.replace('-script', '');
@@ -1185,22 +1142,31 @@ function speakText(scriptId, btn) {
 
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.rate = 0.86;
-  utterance.pitch = 0.92;
+  utterance.pitch = 0.95;
   utterance.volume = 1;
 
-  const voice = selectedVoice || getBestVoice();
-  if (voice) utterance.voice = voice;
+  // Always get fresh voice reference
+  const voice = getRyanVoice();
+  if (voice) {
+    utterance.voice = voice;
+  }
 
   // Progress animation
-  const estimatedDuration = (text.split(' ').length / 130) * 60 * 1000;
+  const wordsPerMin = 130;
+  const estimatedMs = (text.split(/\s+/).length / wordsPerMin) * 60000;
   let elapsed = 0;
   if (progressEl) progressEl.style.width = '0%';
 
   currentProgressInterval = setInterval(() => {
     elapsed += 300;
-    const pct = Math.min(93, (elapsed / estimatedDuration) * 100);
+    const pct = Math.min(93, (elapsed / estimatedMs) * 100);
     if (progressEl) progressEl.style.width = pct + '%';
   }, 300);
+
+  utterance.onstart = () => {
+    btn.innerHTML = '⏸';
+    btn.dataset.speaking = 'true';
+  };
 
   utterance.onend = () => {
     clearInterval(currentProgressInterval);
@@ -1210,8 +1176,10 @@ function speakText(scriptId, btn) {
     currentPlayBtn = null;
   };
 
-  utterance.onerror = () => {
+  utterance.onerror = (e) => {
+    console.error('Speech error:', e);
     clearInterval(currentProgressInterval);
+    if (progressEl) progressEl.style.width = '0%';
     btn.innerHTML = '▶';
     btn.dataset.speaking = '';
     currentPlayBtn = null;
@@ -1223,14 +1191,10 @@ function speakText(scriptId, btn) {
   window.speechSynthesis.speak(utterance);
 }
 
-// Load voices — may fire asynchronously
-window.speechSynthesis.onvoiceschanged = () => {
-  populateVoicePicker();
-};
-// Trigger immediately in case already loaded
-if (window.speechSynthesis.getVoices().length > 0) {
-  populateVoicePicker();
-}
+// Initialise — voices load asynchronously in most browsers
+window.speechSynthesis.onvoiceschanged = initVoice;
+// Also try immediately
+setTimeout(initVoice, 100);
 </script>
 
 </body>
