@@ -1084,118 +1084,128 @@ function toggleScript(id) {
   el.classList.toggle('visible');
 }
 
-// ── SPEECH SYNTHESIS ─────────────────────────────────────────────
-let currentUtterance = null;
-let currentProgressInterval = null;
-let currentProgressEl = null;
-let currentPlayBtn = null;
+// ── SPEECH ENGINE ─────────────────────────────────────────────────
+// Chrome's speechSynthesis.pause() is broken. We simulate pause by
+// cancelling and storing chunk index, then replaying from same chunk.
 
-// ── VOICE: hardcoded to Microsoft Ryan Natural (en-GB) ───────────
-const TARGET_VOICE_NAME = 'Microsoft Ryan Online (Natural)';
-let voiceReady = false;
+const eng = {
+  active: false, paused: false,
+  chunks: [], idx: 0, scriptId: null,
+  btn: null, progressEl: null,
+  timer: null, elapsed: 0, totalMs: 0
+};
 
-function getRyanVoice() {
-  const voices = window.speechSynthesis.getVoices();
-  // Try exact match first
-  let v = voices.find(v => v.name === TARGET_VOICE_NAME);
-  // Fallback: anything with 'ryan' in the name
-  if (!v) v = voices.find(v => v.name.toLowerCase().includes('ryan'));
-  // Fallback: any en-GB male-ish voice
-  if (!v) v = voices.find(v => v.lang === 'en-GB' && !['kate','serena','susan','fiona','moira'].some(f => v.name.toLowerCase().includes(f)));
-  // Final fallback: any en-GB
-  if (!v) v = voices.find(v => v.lang === 'en-GB');
-  return v || null;
+function getRyan() {
+  const vv = window.speechSynthesis.getVoices();
+  return vv.find(v => v.name.toLowerCase().includes('ryan'))
+    || vv.find(v => v.lang === 'en-GB' && !['kate','serena','susan','fiona','moira','libby','hazel'].some(w => v.name.toLowerCase().includes(w)))
+    || vv.find(v => v.lang === 'en-GB')
+    || vv.find(v => v.lang.startsWith('en')) || null;
 }
 
 function initVoice() {
-  const voice = getRyanVoice();
-  const label = document.getElementById('voice-label');
-  if (voice) {
-    voiceReady = true;
-    if (label) label.textContent = `✓ ${voice.name}`;
-  } else {
-    if (label) label.textContent = 'Voice loading...';
-    // Retry after a moment
-    setTimeout(initVoice, 500);
+  const v = getRyan();
+  const el = document.getElementById('voice-label');
+  if (el) el.textContent = v ? '✓ ' + v.name : 'Voice loading...';
+}
+
+function toChunks(text) {
+  const parts = text.replace(/\n+/g, ' ').split(/(?<=[.!?])\s+/);
+  const out = []; let buf = '';
+  for (const s of parts) {
+    if (buf.length + s.length > 200 && buf) { out.push(buf.trim()); buf = s; }
+    else buf += (buf ? ' ' : '') + s;
   }
+  if (buf.trim()) out.push(buf.trim());
+  return out.filter(Boolean);
+}
+
+function stopTimer() {
+  if (eng.timer) { clearInterval(eng.timer); eng.timer = null; }
+}
+
+function startTimer() {
+  stopTimer();
+  eng.timer = setInterval(() => {
+    eng.elapsed += 400;
+    const pct = Math.min(92, (eng.elapsed / eng.totalMs) * 100);
+    if (eng.progressEl) eng.progressEl.style.width = pct + '%';
+  }, 400);
+}
+
+function fullReset() {
+  window.speechSynthesis.cancel();
+  stopTimer();
+  if (eng.progressEl) eng.progressEl.style.width = '0%';
+  if (eng.btn) { eng.btn.innerHTML = '▶'; delete eng.btn.dataset.state; }
+  eng.active = false; eng.paused = false;
+  eng.chunks = []; eng.idx = 0; eng.scriptId = null;
+  eng.btn = null; eng.progressEl = null;
+  eng.elapsed = 0; eng.totalMs = 0;
+}
+
+function playChunk() {
+  if (!eng.active || eng.paused) return;
+  if (eng.idx >= eng.chunks.length) {
+    stopTimer();
+    if (eng.progressEl) {
+      eng.progressEl.style.width = '100%';
+      setTimeout(() => { if (eng.progressEl) eng.progressEl.style.width = '0%'; }, 1500);
+    }
+    if (eng.btn) { eng.btn.innerHTML = '▶'; delete eng.btn.dataset.state; }
+    eng.active = false;
+    return;
+  }
+  const u = new SpeechSynthesisUtterance(eng.chunks[eng.idx]);
+  u.rate = 1.0; u.pitch = 1.0; u.volume = 1.0;
+  const v = getRyan(); if (v) u.voice = v;
+  u.onend = () => { if (!eng.active || eng.paused) return; eng.idx++; setTimeout(playChunk, 50); };
+  u.onerror = (e) => { if (e.error !== 'interrupted' && e.error !== 'canceled') fullReset(); };
+  window.speechSynthesis.speak(u);
 }
 
 function speakText(scriptId, btn) {
-  const scriptEl = document.getElementById(scriptId);
-  if (!scriptEl) { console.error('Script not found:', scriptId); return; }
-  const text = scriptEl.textContent.trim();
-  if (!text) { console.error('No text in:', scriptId); return; }
+  const el = document.getElementById(scriptId); if (!el) return;
+  const text = el.textContent.trim(); if (!text) return;
+  const state = btn.dataset.state || 'stopped';
 
-  // Stop if already speaking
-  if (window.speechSynthesis.speaking) {
+  // PAUSE — cancel current chunk, stay at same idx
+  if (state === 'playing') {
     window.speechSynthesis.cancel();
-    if (currentProgressInterval) clearInterval(currentProgressInterval);
-    if (currentProgressEl) currentProgressEl.style.width = '0%';
-    if (currentPlayBtn) { currentPlayBtn.innerHTML = '▶'; currentPlayBtn.dataset.speaking = ''; }
-    if (btn === currentPlayBtn) { currentPlayBtn = null; return; }
+    eng.paused = true;
+    stopTimer();
+    btn.innerHTML = '▶';
+    btn.dataset.state = 'paused';
+    return;
   }
 
-  const sectionId = scriptId.replace('-script', '');
-  const progressEl = document.getElementById(sectionId + '-progress');
-  currentProgressEl = progressEl;
-  currentPlayBtn = btn;
-
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.rate = 0.86;
-  utterance.pitch = 0.95;
-  utterance.volume = 1;
-
-  // Always get fresh voice reference
-  const voice = getRyanVoice();
-  if (voice) {
-    utterance.voice = voice;
-  }
-
-  // Progress animation
-  const wordsPerMin = 130;
-  const estimatedMs = (text.split(/\s+/).length / wordsPerMin) * 60000;
-  let elapsed = 0;
-  if (progressEl) progressEl.style.width = '0%';
-
-  currentProgressInterval = setInterval(() => {
-    elapsed += 300;
-    const pct = Math.min(93, (elapsed / estimatedMs) * 100);
-    if (progressEl) progressEl.style.width = pct + '%';
-  }, 300);
-
-  utterance.onstart = () => {
+  // RESUME — replay from same chunk
+  if (state === 'paused' && eng.scriptId === scriptId) {
+    eng.paused = false;
     btn.innerHTML = '⏸';
-    btn.dataset.speaking = 'true';
-  };
+    btn.dataset.state = 'playing';
+    startTimer();
+    setTimeout(playChunk, 50);
+    return;
+  }
 
-  utterance.onend = () => {
-    clearInterval(currentProgressInterval);
-    if (progressEl) { progressEl.style.width = '100%'; setTimeout(() => { progressEl.style.width = '0%'; }, 1500); }
-    btn.innerHTML = '▶';
-    btn.dataset.speaking = '';
-    currentPlayBtn = null;
-  };
-
-  utterance.onerror = (e) => {
-    console.error('Speech error:', e);
-    clearInterval(currentProgressInterval);
-    if (progressEl) progressEl.style.width = '0%';
-    btn.innerHTML = '▶';
-    btn.dataset.speaking = '';
-    currentPlayBtn = null;
-  };
-
-  btn.innerHTML = '⏸';
-  btn.dataset.speaking = 'true';
-  currentUtterance = utterance;
-  window.speechSynthesis.speak(utterance);
+  // FRESH START
+  fullReset();
+  const sId = scriptId.replace('-script', '');
+  eng.progressEl = document.getElementById(sId + '-progress');
+  eng.btn = btn; eng.scriptId = scriptId;
+  eng.chunks = toChunks(text); eng.idx = 0;
+  eng.active = true; eng.paused = false; eng.elapsed = 0;
+  eng.totalMs = (text.split(/\s+/).length / 155) * 60000;
+  if (eng.progressEl) eng.progressEl.style.width = '0%';
+  btn.innerHTML = '⏸'; btn.dataset.state = 'playing';
+  startTimer();
+  setTimeout(playChunk, 100);
 }
 
-// Initialise — voices load asynchronously in most browsers
 window.speechSynthesis.onvoiceschanged = initVoice;
-// Also try immediately
-setTimeout(initVoice, 100);
-</script>
+setTimeout(initVoice, 300);
+/script>
 
 </body>
 </html>
