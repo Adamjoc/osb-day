@@ -1110,14 +1110,8 @@ function initVoice() {
 }
 
 function toChunks(text) {
-  const parts = text.replace(/\n+/g, ' ').split(/(?<=[.!?])\s+/);
-  const out = []; let buf = '';
-  for (const s of parts) {
-    if (buf.length + s.length > 200 && buf) { out.push(buf.trim()); buf = s; }
-    else buf += (buf ? ' ' : '') + s;
-  }
-  if (buf.trim()) out.push(buf.trim());
-  return out.filter(Boolean);
+  // Single utterance — Neural voices like Ryan distort when chunked
+  return [text.replace(/\n+/g, ' ').trim()];
 }
 
 function stopTimer() {
@@ -1169,24 +1163,20 @@ function speakText(scriptId, btn) {
   const text = el.textContent.trim(); if (!text) return;
   const state = btn.dataset.state || 'stopped';
 
-  // PAUSE — cancel current chunk, stay at same idx
+  // PAUSE — full stop (single utterance can't resume mid-sentence cleanly)
   if (state === 'playing') {
     window.speechSynthesis.cancel();
     eng.paused = true;
     stopTimer();
     btn.innerHTML = '▶';
-    btn.dataset.state = 'paused';
+    btn.dataset.state = 'stopped';
+    eng.active = false;
     return;
   }
 
-  // RESUME — replay from same chunk
-  if (state === 'paused' && eng.scriptId === scriptId) {
-    eng.paused = false;
-    btn.innerHTML = '⏸';
-    btn.dataset.state = 'playing';
-    startTimer();
-    setTimeout(playChunk, 50);
-    return;
+  // No resume state — just restart on next press
+  if (state === 'paused') {
+    btn.dataset.state = 'stopped';
   }
 
   // FRESH START
