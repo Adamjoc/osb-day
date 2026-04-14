@@ -1100,15 +1100,19 @@ function getVoice() {
   const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
 
   if (isIOS) {
-    // iOS — use best available English voice (Apple voices, not Microsoft)
-    return vv.find(v => v.name === 'Daniel' && v.lang === 'en-GB')
+    // iOS priority: best quality British English voices
+    // 'Daniel' is the high-quality British male on iOS
+    return vv.find(v => v.name === 'Daniel')
+      || vv.find(v => v.name.toLowerCase().includes('daniel'))
+      || vv.find(v => v.lang === 'en-GB' && v.name.toLowerCase().includes('enhanced'))
+      || vv.find(v => v.lang === 'en-GB' && !['kate','serena','moira','fiona','tessa'].some(w => v.name.toLowerCase().includes(w)))
       || vv.find(v => v.lang === 'en-GB')
       || vv.find(v => v.lang === 'en-AU')
       || vv.find(v => v.lang.startsWith('en'))
       || null;
   }
 
-  // Desktop — prefer Microsoft Ryan Natural
+  // Desktop Edge/Chrome — Microsoft Ryan Natural
   return vv.find(v => v.name.toLowerCase().includes('ryan'))
     || vv.find(v => v.lang === 'en-GB' && !['kate','serena','susan','fiona','moira','libby','hazel'].some(w => v.name.toLowerCase().includes(w)))
     || vv.find(v => v.lang === 'en-GB')
@@ -1124,8 +1128,28 @@ function initVoice() {
 }
 
 function toChunks(text) {
-  // Single utterance — Neural voices like Ryan distort when chunked
-  return [text.replace(/\n+/g, ' ').trim()];
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+  const clean = text.replace(/\n+/g, ' ').trim();
+
+  if (!isIOS) {
+    // Desktop Edge/Chrome — single utterance, Neural voice handles it fine
+    return [clean];
+  }
+
+  // iOS — split at paragraph breaks (double space after sentence end)
+  // Aim for ~400 char chunks which iOS handles without degradation
+  const sentences = clean.split(/(?<=[.!?])\s+/);
+  const out = []; let buf = '';
+  for (const s of sentences) {
+    if (buf.length + s.length > 400 && buf) {
+      out.push(buf.trim());
+      buf = s;
+    } else {
+      buf += (buf ? ' ' : '') + s;
+    }
+  }
+  if (buf.trim()) out.push(buf.trim());
+  return out.filter(Boolean);
 }
 
 function stopTimer() {
@@ -1166,8 +1190,9 @@ function playChunk() {
   }
   const u = new SpeechSynthesisUtterance(eng.chunks[eng.idx]);
   const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-  u.rate = isIOS ? 0.9 : 1.0;
-  u.pitch = 1.0; u.volume = 1.0;
+  u.rate = isIOS ? 1.05 : 1.0;
+  u.pitch = isIOS ? 1.0 : 1.0;
+  u.volume = 1.0;
   const v = getVoice(); if (v) u.voice = v;
   u.onend = () => { if (!eng.active || eng.paused) return; eng.idx++; setTimeout(playChunk, 50); };
   u.onerror = (e) => { if (e.error !== 'interrupted' && e.error !== 'canceled') fullReset(); };
