@@ -1095,18 +1095,32 @@ const eng = {
   timer: null, elapsed: 0, totalMs: 0
 };
 
-function getRyan() {
+function getVoice() {
   const vv = window.speechSynthesis.getVoices();
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+
+  if (isIOS) {
+    // iOS — use best available English voice (Apple voices, not Microsoft)
+    return vv.find(v => v.name === 'Daniel' && v.lang === 'en-GB')
+      || vv.find(v => v.lang === 'en-GB')
+      || vv.find(v => v.lang === 'en-AU')
+      || vv.find(v => v.lang.startsWith('en'))
+      || null;
+  }
+
+  // Desktop — prefer Microsoft Ryan Natural
   return vv.find(v => v.name.toLowerCase().includes('ryan'))
     || vv.find(v => v.lang === 'en-GB' && !['kate','serena','susan','fiona','moira','libby','hazel'].some(w => v.name.toLowerCase().includes(w)))
     || vv.find(v => v.lang === 'en-GB')
-    || vv.find(v => v.lang.startsWith('en')) || null;
+    || vv.find(v => v.lang.startsWith('en'))
+    || null;
 }
 
 function initVoice() {
-  const v = getRyan();
+  const v = getVoice();
   const el = document.getElementById('voice-label');
-  if (el) el.textContent = v ? '✓ ' + v.name : 'Voice loading...';
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+  if (el) el.textContent = v ? '✓ ' + v.name + (isIOS ? ' (iOS)' : '') : 'Voice loading...';
 }
 
 function toChunks(text) {
@@ -1151,8 +1165,10 @@ function playChunk() {
     return;
   }
   const u = new SpeechSynthesisUtterance(eng.chunks[eng.idx]);
-  u.rate = 1.0; u.pitch = 1.0; u.volume = 1.0;
-  const v = getRyan(); if (v) u.voice = v;
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+  u.rate = isIOS ? 0.9 : 1.0;
+  u.pitch = 1.0; u.volume = 1.0;
+  const v = getVoice(); if (v) u.voice = v;
   u.onend = () => { if (!eng.active || eng.paused) return; eng.idx++; setTimeout(playChunk, 50); };
   u.onerror = (e) => { if (e.error !== 'interrupted' && e.error !== 'canceled') fullReset(); };
   window.speechSynthesis.speak(u);
@@ -1195,6 +1211,15 @@ function speakText(scriptId, btn) {
 
 window.speechSynthesis.onvoiceschanged = initVoice;
 setTimeout(initVoice, 300);
+
+// iOS: voices only available after user gesture — pre-warm on first touch
+document.addEventListener('touchstart', function warmVoices() {
+  const u = new SpeechSynthesisUtterance('');
+  window.speechSynthesis.speak(u);
+  window.speechSynthesis.cancel();
+  setTimeout(initVoice, 200);
+  document.removeEventListener('touchstart', warmVoices);
+}, { once: true });
 </script>
 
 </body>
