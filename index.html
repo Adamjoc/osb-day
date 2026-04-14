@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Adam O'Connor — Oasis South Bank Interview Day</title>
+<style>
+  :root {
+    --navy: #0D1B2A;
+    --forest: #1A3D2B;
+    --green: #2D6A4F;
+    --leaf: #52B788;
+    --pale: #D8F3DC;
+    --gold: #E9C46A;
+    --amber: #F4A261;
+    --red: #C1292E;
+    --white: #FFFFFF;
+    --off: #F2F5F0;
+    --mid: #8A9BB0;
+    --card: #162B40;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Georgia', serif;
+    background: var(--navy);
+    color: var(--white);
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: linear-gradient(135deg, #0D1B2A 0%, #1A3D2B 100%);
+    padding: 2rem 1.5rem 1.5rem;
+    border-bottom: 3px solid var(--leaf);
+    text-align: center;
+  }
+  header h1 { font-size: clamp(1.4rem, 4vw, 2.2rem); color: var(--white); margin-bottom: 0.4rem; }
+  header p { color: var(--leaf); font-family: 'Calibri', sans-serif; font-size: 0.95rem; }
+  .date-badge {
+    display: inline-block;
+    background: var(--red);
+    color: white;
+    padding: 0.3rem 1rem;
+    border-radius: 20px;
+    font-family: 'Calibri', sans-serif;
+    font-size: 0.85rem;
+    margin-top: 0.6rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+  }
+
+  /* NAVIGATION */
+  nav {
+    background: var(--card);
+    padding: 0.8rem 1rem;
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    border-bottom: 2px solid #1C3550;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  nav button {
+    background: transparent;
+    border: 1px solid var(--leaf);
+    color: var(--leaf);
+    padding: 0.35rem 0.8rem;
+    border-radius: 20px;
+    font-family: 'Calibri', sans-serif;
+    font-size: 0.78rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  nav button:hover, nav button.active {
+    background: var(--leaf);
+    color: var(--navy);
+    font-weight: bold;
+  }
+
+  /* MAIN */
+  main { max-width: 860px; margin: 0 auto; padding: 1.5rem 1rem 4rem; }
+
+  /* SECTION */
+  .section { display: none; animation: fadeIn 0.3s ease; }
+  .section.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* SECTION HEADER */
+  .section-header {
+    background: linear-gradient(135deg, var(--forest), var(--green));
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-left: 5px solid var(--leaf);
+  }
+  .section-header .time-badge {
+    display: inline-block;
+    background: var(--leaf);
+    color: var(--navy);
+    padding: 0.2rem 0.8rem;
+    border-radius: 12px;
+    font-family: 'Calibri', sans-serif;
+    font-size: 0.8rem;
+    font-weight: bold;
+    margin-bottom: 0.6rem;
+  }
+  .section-header h2 { font-size: 1.6rem; margin-bottom: 0.4rem; }
+  .section-header p { color: var(--pale); font-family: 'Calibri', sans-serif; font-size: 0.95rem; }
+
+  /* AUDIO PLAYER */
+  .audio-section {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 1.2rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--leaf);
+  }
+  .audio-section h3 {
+    color: var(--leaf);
+    font-family: 'Calibri', sans-serif;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    margin-bottom: 0.8rem;
+    text-transform: uppercase;
+  }
+  .audio-controls { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+  .play-btn {
+    background: var(--leaf);
+    color: var(--navy);
+    border: none;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    font-size: 1.3rem;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: transform 0.2s, background 0.2s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .play-btn:hover { transform: scale(1.1); background: var(--gold); }
+  .audio-info { flex: 1; min-width: 200px; }
+  .audio-title { font-size: 0.95rem; color: var(--white); margin-bottom: 0.3rem; }
+  .audio-subtitle { font-size: 0.8rem; color: var(--mid); font-family: 'Calibri', sans-serif; }
+  .progress-bar {
+    width: 100%;
+    height: 4px;
+    background: #1C3550;
+    border-radius: 2px;
+    margin-top: 0.6rem;
+    cursor: pointer;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--leaf), var(--gold));
+    border-radius: 2px;
+    transition: width 0.1s;
+    width: 0%;
+  }
+  .speech-text {
+    display: none;
+    margin-top: 1rem;
+    background: #0D2137;
+    border-radius: 8px;
+    padding: 1rem;
+    font-family: 'Calibri', sans-serif;
+    font-size: 0.9rem;
+    line-height: 1.7;
+    color: var(--pale);
+    border-left: 3px solid var(--gold);
+    white-space: pre-wrap;
+  }
+  .speech-text.visible { display: block; }
+  .toggle-script {
+    background: transparent;
+    border: 1px solid var(--mid);
+    color: var(--mid);
+    padding: 0.3rem 0.8rem;
+    border-radius: 12px;
+    font-size: 0.78rem;
+    cursor: pointer;
+    font-family: 'Calibri', sans-serif;
+    margin-top: 0.6rem;
+    transition: all 0.2s;
+  }
+  .toggle-script:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* CARDS */
+  .card {
+    background: var(--card);
+    border-radius: 10px;
+    padding: 1.2rem;
+    margin-bottom: 1rem;
+    border-left: 4px solid var(--leaf);
+  }
+  .card.amber { border-left-color: var(--amber); }
+  .card.red { border-left-color: var(--red); }
+  .card.gold { border-left-color: var(--gold); }
+  .card h3 {
+    font-family: 'Calibri', sans-serif;
+    font-size: 1rem;
+    font-weight: bold;
+    color: var(--leaf);
+    margin-bottom: 0.6rem;
+  }
+  .card.amber h3 { color: var(--amber); }
+  .card.red h3 { color: #FF6B6B; }
+  .card.gold h3 { color: var(--gold); }
+  .card p, .card li {
+    font-family: 'Calibri', sans-serif;
+    font-size: 0.92rem;
+    line-height: 1.6;
+    color: #C8D8E8;
+  }
+  .card ul { padding-left: 1.2rem; }
+  .card li { margin-bottom: 0.3rem; }
+
+  /* Q&A BOXES */
+  .qa-item {
+    background: #0A1520;
+    border-radius: 8px;
+    margin-bottom: 0.8rem;
+    overflow: hidden;
+  }
+  .qa-question {
+    padding: 0.9rem 1rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'Calibri', sans-serif;
+    font-size: 0.92rem;
+    font-weight: bold;
+    color: var(--white);
+    border-left: 4px solid var(--amber);
+    transition: background 0.2s;
+  }
+  .qa-question:hover { background: #0F1F30; }
+  .qa-chevron { transition: transform 0.3s; color: var(--amber); font-size: 0.8rem; }
+  .qa-answer {
+    display: none;
+    padding: 1rem;
+    font-family: 'Calibri', sans-serif;
+    font-size: 0.9rem;
+    line-height: 1.7;
+    color: var(--pale);
+    border-top: 1px solid #1C3550;
+    background: #0D1B2A;
+  }
+  .qa-answer.open { display: block; }
+  .qa-answer strong { color: var(--gold); }
+  .qa-answer em { color: var(--leaf); font-style: normal; }
+
+  /* RESEARCH BOXES */
+  .research-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .research-card {
+    background: var(--card);
+    border-radius: 10px;
+    padding: 1rem;
+    border-top: 3px solid var(--leaf);
+  }
+  .research-card.amber { border-top-color: var(--amber); }
+  .research-card.gold { border-top-color: var(--gold); }
+  .research-card.red { border-top-color: var(--red); }
+  .research-card h4 {
+    font-family: 'Calibri', sans-serif;
+    font-size: 0.85rem;
+    font-weight: bold;
+    color: var(--leaf);
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .research-card.amber h4 { color: var(--amber); }
+  .research-card.gold h4 { color: var(--gold); }
+  .research-card.red h4 { color: #FF6B6B; }
+  .research-card p {
+    font-family: 'Calibri', sans-serif;
+    font-size: 0.88rem;
+    line-height: 1.6;
+    color: #C8D8E8;
+  }
+
+  /* AFFIRMATION */
+  .affirmation {
+    background: linear-gradient(135deg, #1A3D2B, #0D2B18);
+    border: 1px solid var(--leaf);
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    margin-bottom: 1.2rem;
+    text-align: center;
+  }
+  .affirmation p {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: var(--pale);
+    font-style: italic;
+  }
+  .affirmation strong { color: var(--gold); font-style: normal; }
+
+  /* DIVIDER */
+  .divider {
+    border: none;
+    border-top: 1px solid #1C3550;
+    margin: 1.5rem 0;
+  }
+
+  /* PILL LABELS */
+  .pill {
+    display: inline-block;
+    padding: 0.15rem 0.6rem;
+    border-radius: 12px;
+    font-family: 'Calibri', sans-serif;
+    font-size: 0.75rem;
+    font-weight: bold;
+    margin-right: 0.4rem;
+    margin-bottom: 0.3rem;
+  }
+  .pill-green { background: var(--leaf); color: var(--navy); }
+  .pill-amber { background: var(--amber); color: var(--navy); }
+  .pill-red { background: var(--red); color: white; }
+  .pill-gold { background: var(--gold); color: var(--navy); }
+
+  /* SECTION LABEL */
+  .section-label {
+    font-family: 'Calibri', sans-serif;
+    font-size: 0.78rem;
+    color: var(--mid);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 0.6rem;
+    margin-top: 1.4rem;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Adam O'Connor — Interview Day Guide</h1>
+  <p>Oasis Academy South Bank — Deputy Principal</p>
+  <div class="date-badge">Wednesday 15th April 2026</div>
+</header>
+
+<nav id="nav">
+  <button onclick="showSection('overview')" class="active">Overview</button>
+  <button onclick="showSection('context')">Policy Context</button>
+  <button onclick="showSection('welcome')">8:20 Welcome</button>
+  <button onclick="showSection('walk')">Learning Walk</button>
+  <button onclick="showSection('vision')">Vision Discussion</button>
+  <button onclick="showSection('roleplay')">Role Play</button>
+  <button onclick="showSection('lunch')">Lunch</button>
+  <button onclick="showSection('lesson')">Teaching</button>
+  <button onclick="showSection('written')">Written Task</button>
+</nav>
+
+<main>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- OVERVIEW -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div id="overview" class="section active">
+
+  <div class="section-header">
+    <div class="time-badge">FULL DAY OVERVIEW</div>
+    <h2>You are ready for this.</h2>
+    <p>Everything you need for Wednesday 15th April — your schedule, your story, your strengths.</p>
+  </div>
+
+  <div class="audio-section">
+    <h3>🎧 Listen — Opening Briefing</h3>
+    <div class="audio-controls">
+      <button class="play-btn" onclick="speakText('overview-script', this)" aria-label="Play">▶</button>
+      <div class="audio-info">
+        <div class="audio-title">Good morning, Adam. Let's run through the day.</div>
+        <div class="audio-subtitle">Calm briefing · approx. 2 min</div>
+        <div class="progress-bar"><div class="progress-fill" id="overview-progress"></div></div>
+      </div>
+    </div>
+    <button class="toggle-script" onclick="toggleScript('overview-text')">Show script</button>
+    <div class="speech-text" id="overview-text">Good morning, Adam. Today is the day.
+
+You have spent twenty years becoming exactly the person they need. You grew up in South London — working class, bursary boy at Whitgift — and you know, in your bones, what it means when a school opens a door for a child. That is not a biographical detail. That is your north star, and it will carry you through every room you walk into today.
+
+Here is your day. At 8:20 you will be welcomed by Anna Richardson. Stay warm, unhurried, curious. At around 8:30 the learning walk begins — 45 minutes. You are looking at pupils, not teachers. Think: what are they actually doing with their thinking? Then a vision discussion with Anna and Lisa Staniforth — this is where you show your strategic mind. A role play will follow. Then lunch with the Student Parliament — be yourself. Your teaching observation is 35 minutes — the sustainability lesson is ready. And you finish with a 45-minute written task.
+
+You have prepared. The lesson is sent. The crib sheets are in your head. Now breathe. Let's go through each part of the day together.</div>
+  </div>
+
+  <div class="affirmation">
+    <p>You grew up in <strong>South London</strong>. You sat in classrooms just like the ones you'll walk through today. You know what it feels like when a school <strong>changes someone's life</strong> — because it changed yours. That is not a backstory. That is your competitive advantage.</p>
+  </div>
+
+  <div class="section-label">The Schedule</div>
+  <div class="card">
+    <h3>Day at a glance</h3>
+    <ul>
+      <li><strong>8:20am</strong> — Welcome from Anna Richardson</li>
+      <li><strong>~8:30am</strong> — Learning walk (45 mins)</li>
+      <li><strong>~9:15am</strong> — Principal's vision discussion (Anna Richardson + Lisa Staniforth)</li>
+      <li><strong>TBC</strong> — Role play</li>
+      <li><strong>Lunch</strong> — Student Parliament</li>
+      <li><strong>TBC</strong> — Teaching observation, Year 9 top set Geography, 35–40 mins</li>
+      <li><strong>TBC</strong> — Written task, 45 mins</li>
+    </ul>
+  </div>
+
+  <div class="card gold">
+    <h3>Your anchor sentence for the day</h3>
+    <p style="font-size:1.05rem; font-style:italic; color:var(--pale);">"No child is left behind — not because of background, not because of language, not because of circumstance. That is not a slogan for me. It is a personal conviction."</p>
+  </div>
+
+  <div class="card amber">
+    <h3>Key people</h3>
+    <ul>
+      <li><strong>Anna Richardson</strong> — Principal. Leads welcome and vision discussion.</li>
+      <li><strong>Lisa Staniforth</strong> — Joins the vision discussion.</li>
+      <li><strong>Conor Boyle</strong> — Deputy Principal who called you warmly. Your potential peer.</li>
+      <li><strong>Aleisha Fraser</strong> — HR contact (slides sent to her by 16:30 yesterday).</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>Logistics reminders</h3>
+    <ul>
+      <li>Slides sent to aleisha.fraser@oasisuk.org ✓</li>
+      <li>No USB, no handouts — everything is on the slides</li>
+      <li>A3 response sheet: print as backup if tech fails</li>
+      <li>Arrive by 8:10 — composure before you walk in</li>
+    </ul>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- POLICY CONTEXT -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div id="context" class="section">
+
+  <div class="section-header">
+    <div class="time-badge">POLICY BRIEFING</div>
+    <h2>What you've missed — and what to say</h2>
+    <p>Two years out of mainstream UK education. Here is your rapid catch-up on everything that could come up.</p>
+  </div>
+
+  <div class="audio-section">
+    <h3>🎧 Listen — Policy Briefing</h3>
+    <div class="audio-controls">
+      <button class="play-btn" onclick="speakText('context-script', this)" aria-label="Play">▶</button>
+      <div class="audio-info">
+        <div class="audio-title">The UK education landscape — what's changed</div>
+        <div class="audio-subtitle">Key policy updates · approx. 3 min</div>
+        <div class="progress-bar"><div class="progress-fill" id="context-progress"></div></div>
+      </div>
+    </div>
+    <button class="toggle-script" onclick="toggleScript('context-text')">Show script</button>
+    <div class="speech-text" id="context-text">Adam, you've been leading a Cambridge international school in Lisbon. That is not a gap — that is a perspective. But let's make sure you walk in with the current picture clear in your mind.
+
+First: Progress 8. The headline measure has been suspended for 2024-25 and 2025-26. The reason is simple: the cohort sitting GCSEs now had their Key Stage 2 SATs cancelled in 2020 due to COVID — so there is no prior attainment baseline to calculate against. Schools are currently being judged on Attainment 8 only, alongside the 2022-23 and 2023-24 Progress 8 scores as context. P8 returns in 2026-27. Longer term, the government is consulting on reforms to how A8 and P8 are calculated — dropping EBacc slots in favour of broader breadth from 2028-29. The key line for you: "I understand we're in a transitional period for accountability data. I'd want to build rich internal tracking that goes beyond headline measures — using progress data from baseline assessments, not just external proxies."
+
+Second: SEND. This is the biggest shift in a generation. In February 2026 — literally weeks ago — the government published its schools white paper called Every Child Achieving and Thriving. The headline: mainstream schools will be responsible for creating Individual Support Plans for every child with SEND. EHCPs remain for complex needs, but the direction is clear — inclusion first, mainstream first, graduated response. There is £1 billion new funding for high needs in 2026-27 rising to £1.5 billion by 2028. Ofsted now includes inclusion as a separate criterion. The key line for you: "I strongly support the direction of travel — inclusion is not a bolt-on. It has to be the architecture of the whole school. At Marylebone Boys' we built that from the ground up."
+
+Third: AI. Ofsted clarified its position in June 2025 — it does not grade AI use as a standalone judgement. But inspectors will ask about decision-making and governance. Every school should have an AI policy. The DfE published support materials in June 2025. The key line for you: "I've been working at the frontier of this in Lisbon — using AI to support lesson design, CPD, and adaptive feedback. The risk isn't adopting AI — Ofsted's own research says the biggest risk is doing nothing. The question is governance: how do we ensure it serves pupils, not replaces professional judgement."
+
+Fourth: the new Ofsted framework. In November 2025 Ofsted launched a refreshed Education Inspection Framework with report cards replacing single-word grades. Inspections now give granular detail across multiple sub-areas including a new separate safeguarding grade — met or not met. The framework emphasises inclusion, disadvantage, and adaptive teaching.
+
+You are not behind. You have been working internationally, building curriculum, leading change. That is an asset. Claim it.</div>
+  </div>
+
+  <div class="section-label">Progress 8 &amp; Accountability</div>
+  <div class="research-grid">
+    <div class="research-card">
+      <h4>P8 Suspended 2024–26</h4>
+      <p>No Progress 8 for 2024-25 or 2025-26 — COVID cancelled the KS2 SATs for this cohort. Schools are measured on Attainment 8 only, with 2022-23 and 2023-24 P8 shown as context. P8 returns in 2026-27.</p>
+    </div>
+    <div class="research-card amber">
+      <h4>Future A8/P8 Reform</h4>
+      <p>Government consulting on changes from 2028-29: EBacc slots replaced by 'breadth' slots — science, humanities, languages or creative arts. Religious Studies reclassified as a humanity alongside Geography and History.</p>
+    </div>
+    <div class="research-card gold">
+      <h4>Your line on data</h4>
+      <p>"I'd build rich internal tracking beyond headline measures — progress from baseline, not just external proxies. A8 alone can mask great work in disadvantaged schools."</p>
+    </div>
+  </div>
+
+  <div class="section-label">SEND — The Biggest Shift in a Generation</div>
+  <div class="research-grid">
+    <div class="research-card red">
+      <h4>The crisis in numbers</h4>
+      <p>1.7 million pupils with identified SEN in England (19.6%). EHCPs up 11.1% in one year — 483,000 plans and doubled since 2016. Per-EHCP funding nearly halved in real terms since 2015.</p>
+    </div>
+    <div class="research-card">
+      <h4>Feb 2026 White Paper</h4>
+      <p><em>Every Child Achieving and Thriving</em>: Individual Support Plans for all SEND pupils. Mainstream first. £1bn new funding 2026-27. Ofsted adds inclusion criterion. New "Experts at Hand" service — OT, EP and SALT into mainstream.</p>
+    </div>
+    <div class="research-card amber">
+      <h4>Graduated Response</h4>
+      <p>Assess → Plan → Do → Review. This is the framework. EHCPs remain for complex needs. Schools must demonstrate early intervention, not wait for diagnosis. Adaptive teaching is the expectation, not the exception.</p>
+    </div>
+    <div class="research-card gold">
+      <h4>Your line on SEND</h4>
+      <p>"Inclusion is architecture, not add-on. At Marylebone Boys' we built SEND infrastructure from scratch in a school serving a disadvantaged inner-London community. I know what it takes to get this right from day one."</p>
+    </div>
+  </div>
+
+  <div class="section-label">AI in Education</div>
+  <div class="research-grid">
+    <div class="research-card">
+      <h4>Ofsted on AI (June 2025)</h4>
+      <p>Not a standalone inspection criterion. But inspectors will look at governance and decision-making. Schools need an AI policy. The watchdog's research found most AI early adopters had an "AI champion" leading adoption.</p>
+    </div>
+    <div class="research-card amber">
+      <h4>Ofsted's warning</h4>
+      <p>"The biggest risk is doing nothing." Schools using AI thoughtfully are protected. Schools with no policy or governance are at risk if AI harms outcomes or safeguarding.</p>
+    </div>
+    <div class="research-card gold">
+      <h4>Your line on AI</h4>
+      <p>"I've been working at the frontier — using AI for lesson design, CPD scaffolding and adaptive feedback loops. The question isn't whether — it's governance. AI must serve pupils, never replace professional judgement."</p>
+    </div>
+  </div>
+
+  <div class="section-label">New Ofsted Framework (November 2025)</div>
+  <div class="card">
+    <h3>What changed</h3>
+    <ul>
+      <li>Report cards replace single-word grades — more granular, multi-area judgements</li>
+      <li>Safeguarding now a <strong>separate grade</strong>: met or not met</li>
+      <li>New emphasis on <strong>inclusion, disadvantage and adaptive teaching</strong></li>
+      <li>AI evaluated through existing lenses — curriculum impact, leadership, safeguarding</li>
+      <li>Pilot inspections ran in 115 schools from September 2025 before full rollout</li>
+    </ul>
+  </div>
+
+  <div class="section-label">Key Research to Name-drop</div>
+  <div class="research-grid">
+    <div class="research-card">
+      <h4>EEF — Metacognition (2023)</h4>
+      <p>+7 months progress. Teach pupils to plan, monitor and evaluate their own learning. Most powerful with disadvantaged pupils. Overt in your lesson design.</p>
+    </div>
+    <div class="research-card amber">
+      <h4>EEF — SEND in Mainstream (2021, updated 2024)</h4>
+      <p>High quality teaching is the best SEND intervention. Adaptive teaching > separate provision where possible. Explicit instruction, scaffolding, feedback loops.</p>
+    </div>
+    <div class="research-card gold">
+      <h4>Rosenshine's Principles (2012, revived)</h4>
+      <p>10 principles of instruction — daily review, small steps, modelling, checking for understanding. Still the dominant framework in UK schools. Reference it naturally, not dogmatically.</p>
+    </div>
+    <div class="research-card">
+      <h4>EEF Literacy — Secondary (2022)</h4>
+      <p>Every teacher is a literacy teacher. Explicit vocab instruction, structured reading, extended writing. Directly relevant to your lesson's source analysis and written response.</p>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- WELCOME -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div id="welcome" class="section">
+
+  <div class="section-header">
+    <div class="time-badge">8:20AM</div>
+    <h2>Welcome — Anna Richardson</h2>
+    <p>The first impression is set in the first 90 seconds. Warm, grounded, unhurried.</p>
+  </div>
+
+  <div class="audio-section">
+    <h3>🎧 Listen — Walking in</h3>
+    <div class="audio-controls">
+      <button class="play-btn" onclick="speakText('welcome-script', this)" aria-label="Play">▶</button>
+      <div class="audio-info">
+        <div class="audio-title">How to arrive and open</div>
+        <div class="audio-subtitle">Tone-setting · approx. 90 sec</div>
+        <div class="progress-bar"><div class="progress-fill" id="welcome-progress"></div></div>
+      </div>
+    </div>
+    <button class="toggle-script" onclick="toggleScript('welcome-text')">Show script</button>
+    <div class="speech-text" id="welcome-text">Adam, you are walking into a school in South London. You have been here before — metaphorically and literally. You visited Oasis South Bank in 2020 and it moved you. Let that come through.
+
+When Anna greets you, slow down. You don't need to fill the space. A genuine smile, eye contact, and warmth. Let her set the tone for the opening conversation. Your role right now is to be curious and present — not to perform.
+
+If she asks how you're feeling or about the journey, be honest and light: "Glad to be back on this side of the river — I've been looking forward to this since Conor and I spoke."
+
+If she asks why Oasis, this is your opener: "I visited South Bank in 2020 and something about the school stayed with me. The way the staff talked about the pupils — there was a belief there that felt unconditional. I've carried that. And my professional mantra — no child is left behind — isn't rhetoric for me. I grew up in South London on a bursary. I know what it feels like when a school opens that door. This is a school that does that."
+
+Then stop. Let it breathe. You don't need more than that to open.</div>
+  </div>
+
+  <div class="card gold">
+    <h3>Opening anchor — use this if asked "why Oasis?"</h3>
+    <p style="font-style:italic; color: var(--pale);">"I visited South Bank in 2020 and something about the school stayed with me. The staff talked about pupils with unconditional belief. My mantra — no child is left behind — is personal. I grew up in South London on a bursary at Whitgift. I know what it feels like when a school changes a life. That's what Oasis does."</p>
+  </div>
+
+  <div class="card">
+    <h3>Body language checklist</h3>
+    <ul>
+      <li>Slow your walk — you have time, you're not rushing</li>
+      <li>Firm handshake, held eye contact, genuine smile</li>
+      <li>Don't over-explain or fill silences immediately</li>
+      <li>Show interest in the building — look around, comment genuinely</li>
+    </ul>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- LEARNING WALK -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div id="walk" class="section">
+
+  <div class="section-header">
+    <div class="time-badge">~8:30AM — 45 MINS</div>
+    <h2>Learning Walk</h2>
+    <p>Look at pupils, not teachers. Think coaching lens, not inspector lens.</p>
+  </div>
+
+  <div class="audio-section">
+    <h3>🎧 Listen — Walk briefing</h3>
+    <div class="audio-controls">
+      <button class="play-btn" onclick="speakText('walk-script', this)" aria-label="Play">▶</button>
+      <div class="audio-info">
+        <div class="audio-title">What to look for and what to say</div>
+        <div class="audio-subtitle">Coaching lens · approx. 2 min</div>
+        <div class="progress-bar"><div class="progress-fill" id="walk-progress"></div></div>
+      </div>
+    </div>
+    <button class="toggle-script" onclick="toggleScript('walk-text')">Show script</button>
+    <div class="speech-text" id="walk-text">Adam, the learning walk is not an Ofsted inspection. Do not walk like an inspector. Walk like a Deputy who leads learning — curious, specific, developmental.
+
+Here is your framework for every classroom. Strength first — what is genuinely strong in this room? Development point — one specific, actionable observation. Coaching conversation — how would you open that conversation with the teacher? Academy priority — how does this connect to the school's bigger work?
+
+The gold is in the pupils. Ask yourself: what are the pupils actually doing with their thinking? Are they just completing tasks, or are they reasoning, evaluating, making decisions? That distinction — task completion versus intellectual engagement — is where you show your sophistication.
+
+Things to look for: Is adaptive teaching visible? Can you see differentiation happening in real time? Are there pupils who appear disengaged or lost — what would you do? Is literacy embedded in the lesson? Are vocabulary and extended writing present? Is there a culture of challenge and high expectation?
+
+If they invite you to comment afterwards, use this structure: "One thing that struck me was... and I'd be curious to know more about how the school is developing... because the connection to pupil progress is..." Always connect observation to pupil outcome. Always.
+
+And here is the human note: look at the pupils the way you used to be looked at. The kid at the back who isn't quite tracking — notice them. That is who you are here for.</div>
+  </div>
+
+  <div class="card">
+    <h3>Your observation framework: Strength → Development → Coaching → Priority</h3>
+    <ul>
+      <li><strong>Strength:</strong> Name one genuinely strong thing — specific, not vague</li>
+      <li><strong>Development:</strong> One precise, actionable observation</li>
+      <li><strong>Coaching conversation:</strong> How would you open it with the teacher?</li>
+      <li><strong>Academy priority:</strong> How does this connect to the school's broader agenda?</li>
+    </ul>
+  </div>
+
+  <div class="card amber">
+    <h3>What to look for — in priority order</h3>
+    <ul>
+      <li><strong>Pupil thinking</strong> — are they reasoning or just completing tasks?</li>
+      <li><strong>Adaptive teaching</strong> — is differentiation visible in real time?</li>
+      <li><strong>Checking for understanding</strong> — cold call, mini whiteboards, hinge questions?</li>
+      <li><strong>Literacy</strong> — vocabulary, extended writing, reading in subjects?</li>
+      <li><strong>Participation</strong> — who is and isn't engaged? What would you do?</li>
+    </ul>
+  </div>
+
+  <div class="card gold">
+    <h3>Your key line if asked for feedback</h3>
+    <p style="font-style:italic; color: var(--pale);">"My coaching begins with reflection before moving to precise, actionable next steps. I'd always start with what the teacher notices themselves — that's where the most durable change begins."</p>
+  </div>
+
+  <div class="section-label">Likely questions during or after the walk</div>
+  <div class="qa-item">
+    <div class="qa-question" onclick="toggleQA(this)">What would you prioritise improving first if you walked into a school like this? <span class="qa-chevron">▼</span></div>
+    <div class="qa-answer"><strong>Lead with culture before systems:</strong> "I'd start by understanding what teachers believe about the pupils in front of them — because belief drives practice. If teachers have high, unconditional expectations, the pedagogy follows. I'd look at how feedback and challenge are embedded, and then how that connects to outcomes for the most disadvantaged pupils. Strong outcomes only become sustainable when culture, curriculum, inclusion and teaching quality are in alignment."</div>
+  </div>
+  <div class="qa-item">
+    <div class="qa-question" onclick="toggleQA(this)">What do you look for in a great lesson? <span class="qa-chevron">▼</span></div>
+    <div class="qa-answer"><strong>Don't list Rosenshine robotically — contextualise it:</strong> "I look at what pupils are actually doing with their thinking — not just whether they're on task, but whether they're reasoning, evaluating, making connections. The research on metacognition from the EEF is clear — when pupils are taught to plan and monitor their own learning, the gains are significant, especially for disadvantaged pupils. I look for that deliberate teaching of thinking, not just the delivery of content."</div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- VISION DISCUSSION -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div id="vision" class="section">
+
+  <div class="section-header">
+    <div class="time-badge">~9:15AM</div>
+    <h2>Principal's Vision Discussion</h2>
+    <p>Anna Richardson + Lisa Staniforth. This is your strategic leadership interview. Show the Deputy, not the consultant.</p>
+  </div>
+
+  <div class="audio-section">
+    <h3>🎧 Listen — Vision discussion prep</h3>
+    <div class="audio-controls">
+      <button class="play-btn" onclick="speakText('vision-script', this)" aria-label="Play">▶</button>
+      <div class="audio-info">
+        <div class="audio-title">How to lead with values and show strategic depth</div>
+        <div class="audio-subtitle">Leadership framing · approx. 2.5 min</div>
+        <div class="progress-bar"><div class="progress-fill" id="vision-progress"></div></div>
+      </div>
+    </div>
+    <button class="toggle-script" onclick="toggleScript('vision-text')">Show script</button>
+    <div class="speech-text" id="vision-text">Adam, this is the most important conversation of the day. Anna and Lisa want to know: does this person understand what we are trying to do, and can they help us do it?
+
+Oasis is a values-led trust. Their nine habits, their ethos of social purpose — these are not marketing copy. They mean them. So you need to meet them there.
+
+Your core message for this conversation is this: educational background, need, language or circumstance should never determine educational quality. That is your belief. It is also their belief. Find the overlap and live in it.
+
+When they ask about your vision, don't just list competencies. Give them a picture. Something like: "When I think about what a truly inclusive, high-achieving school looks like — it's a place where every member of staff believes, unconditionally, that every child in front of them can achieve. Not because they're told to believe it. Because the culture of the school makes it the only rational conclusion. Curriculum is ambitious. Teaching is adaptive. And the pastoral architecture wraps around the academic, not the other way around."
+
+On strategy: you've led improvement across 50 academies in Harris. You've seen what works at scale. You know the difference between surface compliance and embedded change. That is a genuine asset. Use it without arrogance. "I've seen enough schools to know that what works isn't the programme — it's the belief and the precision behind it."
+
+On your time abroad: don't be defensive. Lean in. "The last two years have given me perspective that I think only comes from stepping outside the system. Leading a Cambridge international school taught me what genuinely world-class curriculum architecture looks like — and I've brought that lens back to everything I think about now."
+
+One critical point: they want a Deputy, not a consultant. Show operational rootedness. Mention timetabling, staffing, day-to-day challenge. Let them see you can hold the building as well as the vision.</div>
+  </div>
+
+  <div class="affirmation">
+    <p>"Strong outcomes only become sustainable when <strong>culture, curriculum, inclusion and teaching quality</strong> are in alignment — and someone is doing the unglamorous work of holding all four at once. That is what a Deputy does."</p>
+  </div>
+
+  <div class="section-label">High-probability questions — click to reveal your answer framework</div>
+
+  <div class="qa-item">
+    <div class="qa-question" onclick="toggleQA(this)">Why do you want to be a Deputy Principal at Oasis South Bank specifically? <span class="qa-chevron">▼</span></div>
+    <div class="qa-answer"><strong>Personal + professional + this school specifically:</strong> "Three things. First: personal. I grew up in South London, working class family, 100% bursary to Whitgift. I know what it feels like when a school opens a door — because one opened a door for me. That never leaves you. Second: professional. I've spent 20 years in schools that serve communities like this one, and the work I'm most proud of has always been in contexts where the stakes are real. At Marylebone Boys' I built everything from scratch. At Harris I reviewed 50 academies. I know what good looks like and I know how hard it is to build. Third: this school. I visited South Bank in 2020. The staff talked about their pupils with unconditional belief. That's not everywhere. That's worth joining."</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-question" onclick="toggleQA(this)">What does genuinely inclusive education look like in practice? <span class="qa-chevron">▼</span></div>
+    <div class="qa-answer"><strong>Concrete + current + connected to SEND reform:</strong> "Inclusion is architecture, not add-on. It means adaptive teaching is the baseline expectation, not a response to an EHCP. The EEF is clear — the highest-impact SEND intervention is high-quality teaching. The government's white paper published last month points the whole system in this direction: Individual Support Plans, mainstream first, graduated response, £1 billion new investment. I'm strongly aligned with that direction. What I'd add is that inclusion only works if the whole staff believes it's possible — and that requires CPD, coaching and a culture of high expectation for every child."</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-question" onclick="toggleQA(this)">How would you approach improving outcomes for disadvantaged pupils? <span class="qa-chevron">▼</span></div>
+    <div class="qa-answer"><strong>Evidence-led + operationally grounded + personal:</strong> "Start with belief, then build the systems. Teachers who believe disadvantaged pupils can achieve highly — and who have the skills to make that real — are the single biggest lever. I'd build on EEF evidence: metacognition, explicit vocabulary instruction, feedback quality, attendance. I'd use Pupil Premium strategically — not to fund interventions at the margins, but to fund the things that improve teaching quality for everyone. And I'd track relentlessly — not just A8, but progress from baseline, attendance, internal assessment data. The pupils who need us most deserve the most precise attention."</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-question" onclick="toggleQA(this)">You've been out of mainstream UK education for two years. What have you missed and how have you kept up? <span class="qa-chevron">▼</span></div>
+    <div class="qa-answer"><strong>Reframe as asset, not gap:</strong> "I'd push back slightly on the framing — I haven't been out of education, I've been leading a Cambridge international school in Lisbon. The perspective that gives me is genuinely useful: I've seen what world-class curriculum architecture looks like without the constraints of Ofsted pressure. But I've also stayed closely connected to the UK landscape. I'm across the accountability changes — P8 suspended for the current cohort due to COVID, A8 as the current headline. The new Ofsted framework from November 2025. The SEND white paper from February 2026. And I've been thinking carefully about AI in education — we've been implementing it in Lisbon in ways that I think are ahead of most UK schools."</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-question" onclick="toggleQA(this)">How would you describe your leadership style? <span class="qa-chevron">▼</span></div>
+    <div class="qa-answer"><strong>Warm authority + evidence + honesty:</strong> "I lead with high expectation and warmth — I think those two things reinforce each other rather than being in tension. I'm direct, but I always start from a position of professional respect. I believe in coaching over telling. I'd rather a teacher discovers the right answer through reflection than be told it by me — that's where the lasting change is. I'm also honest about what I don't know. I've been in enough schools to know that the leader who pretends to have all the answers is the most dangerous person in the building."</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-question" onclick="toggleQA(this)">James Handscombe at HWSF said this wasn't an ambitious application for you — how do you respond to the idea that Deputy Principal is a step back? <span class="qa-chevron">▼</span></div>
+    <div class="qa-answer"><strong>Be honest and grounded — this is actually a strength:</strong> "James is right that I've operated at a strategic level across large systems. But I want to be in a school — in the rooms, with the pupils, with the staff — because that's where I do my best work. A Deputy Principal role in a school with real community, real complexity and real purpose isn't a step back. It's a deliberate choice to do the work that matters most to me. And frankly, the experience I've built means I can add a level of strategic insight to this role that would otherwise take years to develop."</div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- ROLE PLAY -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div id="roleplay" class="section">
+
+  <div class="section-header">
+    <div class="time-badge">ROLE PLAY</div>
+    <h2>Role Play Scenario</h2>
+    <p>Listen first. Clarify. Respond calmly. Stay values-led.</p>
+  </div>
+
+  <div class="audio-section">
+    <h3>🎧 Listen — Role play briefing</h3>
+    <div class="audio-controls">
+      <button class="play-btn" onclick="speakText('roleplay-script', this)" aria-label="Play">▶</button>
+      <div class="audio-info">
+        <div class="audio-title">How to approach the role play with calm authority</div>
+        <div class="audio-subtitle">Composure under pressure · approx. 90 sec</div>
+        <div class="progress-bar"><div class="progress-fill" id="roleplay-progress"></div></div>
+      </div>
+    </div>
+    <button class="toggle-script" onclick="toggleScript('roleplay-text')">Show script</button>
+    <div class="speech-text" id="roleplay-text">Adam, the role play is designed to see how you handle pressure, ambiguity and interpersonal challenge. They are not looking for the perfect answer. They are looking for composure, humanity and professional judgement.
+
+Common scenarios: an angry parent, a difficult safeguarding boundary, a staff member in distress, a curriculum conflict, a challenging governor or trustee.
+
+Whatever the scenario — listen first. Do not rush to fix. Use this opener: "Thank you. I can see why this matters. Before I respond, let me make sure I've understood correctly..." Then summarise back what you've heard. That one move — paraphrase before you respond — shows emotional intelligence, buys you time, and almost always de-escalates.
+
+Stay values-led. Whatever the pressure, come back to the child. "My first responsibility is to the child in front of us. Everything else we can work through together."
+
+Do not become defensive. Do not become overly managerial. You are warm, direct, and grounded.
+
+If it's a safeguarding scenario: clear boundaries, clear language, clear referral. "This is a safeguarding matter and my first step is to ensure the child is safe. I would follow our referral process and document immediately."
+
+If it's a staff scenario: empathy first, accountability second. "I can hear this is difficult. Let's separate the immediate support you need from the question of what happened — because both matter and they need different conversations."
+
+You've held safeguarding leads, you've built pastoral systems from scratch, you've faced every version of this. Trust your experience.</div>
+  </div>
+
+  <div class="card gold">
+    <h3>Your opening line — use this every time</h3>
+    <p style="font-style:italic; color: var(--pale);">"Thank you — I can see why this matters. Before I respond, let me make sure I've understood correctly..."</p>
+  </div>
+
+  <div class="card">
+    <h3>The framework: Listen → Clarify → Summarise → Respond → Values</h3>
+    <ul>
+      <li><strong>Listen</strong> — don't interrupt, don't solve yet</li>
+      <li><strong>Clarify</strong> — "Can I ask one thing to make sure I understand fully?"</li>
+      <li><strong>Summarise</strong> — reflect back what you heard before responding</li>
+      <li><strong>Respond</strong> — calmly, specifically, without defensiveness</li>
+      <li><strong>Values</strong> — always come back to the child's best interest</li>
+    </ul>
+  </div>
+
+  <div class="card amber">
+    <h3>Likely scenario types — your anchors</h3>
+    <ul>
+      <li><strong>Angry parent:</strong> Empathy first. "I can hear how worried you are." Never promise what you can't deliver.</li>
+      <li><strong>Safeguarding:</strong> Clear, immediate, documented. Child first. Referral process.</li>
+      <li><strong>Staff in distress:</strong> Separate support from accountability. Both matter, different conversations.</li>
+      <li><strong>Curriculum/results conflict:</strong> Data + professional judgement + student-centred.</li>
+    </ul>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- LUNCH -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div id="lunch" class="section">
+
+  <div class="section-header">
+    <div class="time-badge">LUNCH</div>
+    <h2>Student Parliament</h2>
+    <p>Be yourself. This is a genuine conversation, not a performance. The students will sense the difference.</p>
+  </div>
+
+  <div class="audio-section">
+    <h3>🎧 Listen — Lunch briefing</h3>
+    <div class="audio-controls">
+      <button class="play-btn" onclick="speakText('lunch-script', this)" aria-label="Play">▶</button>
+      <div class="audio-info">
+        <div class="audio-title">How to be with the students</div>
+        <div class="audio-subtitle">Genuine connection · approx. 60 sec</div>
+        <div class="progress-bar"><div class="progress-fill" id="lunch-progress"></div></div>
+      </div>
+    </div>
+    <button class="toggle-script" onclick="toggleScript('lunch-text')">Show script</button>
+    <div class="speech-text" id="lunch-text">Adam, this is the part of the day where you stop being a candidate and just be a person. These students have been selected because they're thoughtful and engaged. They will see through any performance immediately.
+
+Don't dominate the conversation. Ask questions and genuinely listen to the answers. Ask them what makes South Bank special. Ask what the best teachers here do. Ask what they wish more adults understood about them. Then listen — really listen — and respond to what they actually say, not what you expected them to say.
+
+If they ask you about yourself, be honest. Tell them you grew up in South London. That you went to school on a bursary and it changed your life. That you believe every single one of them deserves the same opportunity, and that's why you do this job.
+
+You don't need to impress them. Just be present. Eat your lunch. Laugh if something is funny. These are the young people you're going to serve. Let that feel real.</div>
+  </div>
+
+  <div class="card gold">
+    <h3>Questions to ask the students</h3>
+    <ul>
+      <li>"What makes South Bank different from other schools you know about?"</li>
+      <li>"What do the best teachers here actually do?"</li>
+      <li>"What do you wish adults in schools understood better about young people?"</li>
+      <li>"What are you most proud of at this school?"</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>If they ask about you</h3>
+    <p>Be honest and direct. Tell them you grew up in South London. You went to school on a bursary. You know what it's like to be in a room where people didn't expect much from someone like you — and you know what it's like when a school does. That's why you're here.</p>
+  </div>
+
+  <div class="affirmation">
+    <p>These students are not your audience. They are the <strong>reason</strong> you are sitting in that room.</p>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- LESSON -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div id="lesson" class="section">
+
+  <div class="section-header">
+    <div class="time-badge">TEACHING OBSERVATION — 35 MINS</div>
+    <h2>The Lesson</h2>
+    <p>Year 9 top set Geography. One student with speech and language EHCP. Sustainability stool — Operation Green Wall.</p>
+  </div>
+
+  <div class="audio-section">
+    <h3>🎧 Listen — Teaching briefing</h3>
+    <div class="audio-controls">
+      <button class="play-btn" onclick="speakText('lesson-script', this)" aria-label="Play">▶</button>
+      <div class="audio-info">
+        <div class="audio-title">Walk into the classroom with presence and clarity</div>
+        <div class="audio-subtitle">Lesson confidence · approx. 2.5 min</div>
+        <div class="progress-bar"><div class="progress-fill" id="lesson-progress"></div></div>
+      </div>
+    </div>
+    <button class="toggle-script" onclick="toggleScript('lesson-text')">Show script</button>
+    <div class="speech-text" id="lesson-text">Adam, the lesson is designed. The slides are sent. The A3 response sheets are ready as backup. You know this content deeply — you built it. Trust that.
+
+Walk in with presence, not nerves. You are a senior educator who has observed hundreds of lessons. Now you're teaching one. The difference is that you care about these students, and that will come through.
+
+Your lesson arc: Hook with the BBC news slide — Operation Green Wall. Let them react. Ask: who thinks this is a good idea? Who thinks there might be problems? Then — "That's what geographers do. They dig deeper." Move to the stool framework. Brundtland definition. Three questions. Then the three sources — one at a time, with your discussion prompts. Then writing time on the A3 sheet. Exit ticket at the end.
+
+Key principles throughout. Narrate your thinking explicitly — "I'm not just describing here, I'm making a geographical argument." Use mini whiteboards frequently — don't wait for the writing task to check understanding. Cold call with warmth — "I'm going to come to you in a moment, have a think." Never humiliate. Always affirm effort alongside accuracy.
+
+For your EHCP student: vocabulary is on screen throughout. Sentence stems are on the response sheet. Check in early — a quiet proximity check in the first ten minutes. Pair them briefly with a peer for discussion before solo writing. Make the support natural and embedded, not separate and signposted.
+
+If a panel member interrupts with coaching feedback — stop, listen, thank them, adapt. That is not failure. That is the point. "Thanks for that — let me adjust." Then do it. Adapting in real time is one of the highest-value things you can demonstrate.
+
+You have prepared this lesson with more care than most teachers give most lessons. Now go and enjoy teaching it.</div>
+  </div>
+
+  <div class="card gold">
+    <h3>Lesson structure — 35 minutes</h3>
+    <ul>
+      <li><strong>0–3 min:</strong> BBC News hook — "Operation Green Wall." Who thinks this is a great idea?</li>
+      <li><strong>3–8 min:</strong> Sustainability stool + Brundtland definition. Three questions.</li>
+      <li><strong>8–20 min:</strong> Sources A, B, C — one at a time. Mini whiteboards. Cold call.</li>
+      <li><strong>20–33 min:</strong> A3 response sheet — three paragraphs, exit ticket.</li>
+      <li><strong>33–35 min:</strong> Exit ticket verbal share / close.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>What the panel is looking for — from your crib sheet</h3>
+    <ul>
+      <li>High challenge with realistic pacing</li>
+      <li>Visible adaptive teaching for EHCP pupil</li>
+      <li>Frequent checks for understanding</li>
+      <li>Strong classroom presence and warm authority</li>
+      <li>Ability to adapt in real time to coaching</li>
+    </ul>
+  </div>
+
+  <div class="card amber">
+    <h3>EHCP student — speech and language</h3>
+    <ul>
+      <li>Vocab panel visible on slides throughout — point to it early</li>
+      <li>Sentence stems on the A3 sheet — show them specifically</li>
+      <li>Proximity check quietly in first 10 minutes</li>
+      <li>Pair briefly with peer before solo writing — natural, not singled out</li>
+      <li>Aim for 2–3 sentences per paragraph — quality over quantity</li>
+      <li>Praise effort and contribution publicly when appropriate</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>Source discussion prompts — from your lesson crib sheet</h3>
+    <ul>
+      <li><strong>Source A:</strong> "What does this suggest about environmental sustainability specifically? Why is this significant for long-term rainforest protection?"</li>
+      <li><strong>Source B:</strong> "Which social groups are most affected and why? Why might this violate human rights?"</li>
+      <li><strong>Source C:</strong> "Does expensive always mean unsustainable? Why might REDD+ be a better alternative?"</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>If coaching is interrupted — your responses</h3>
+    <ul>
+      <li><strong>Participation feedback:</strong> Add more mini whiteboards / increase cold call frequency</li>
+      <li><strong>Scaffold feedback:</strong> Re-model paragraph / make sentence stems more explicit</li>
+      <li><strong>Pace feedback:</strong> Reduce exposition, move faster to independent writing</li>
+    </ul>
+  </div>
+
+  <div class="card amber">
+    <h3>Narration prompts — say these aloud while modelling</h3>
+    <ul>
+      <li>"I'm not just describing — I'm making a geographical judgement."</li>
+      <li>"Now I need evidence to support that judgement."</li>
+      <li>"Now I explain why that matters geographically."</li>
+      <li>"Now I add nuance — a counterargument, an alternative view."</li>
+    </ul>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- WRITTEN TASK -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div id="written" class="section">
+
+  <div class="section-header">
+    <div class="time-badge">WRITTEN TASK — 45 MINS</div>
+    <h2>Written Task</h2>
+    <p>Think Deputy, not consultant. Context → Issue → Immediate → Medium-term → Risks → Success measures.</p>
+  </div>
+
+  <div class="audio-section">
+    <h3>🎧 Listen — Written task briefing</h3>
+    <div class="audio-controls">
+      <button class="play-btn" onclick="speakText('written-script', this)" aria-label="Play">▶</button>
+      <div class="audio-info">
+        <div class="audio-title">How to approach the 45-minute written task</div>
+        <div class="audio-subtitle">Strategic clarity · approx. 90 sec</div>
+        <div class="progress-bar"><div class="progress-fill" id="written-progress"></div></div>
+      </div>
+    </div>
+    <button class="toggle-script" onclick="toggleScript('written-text')">Show script</button>
+    <div class="speech-text" id="written-text">Adam, the written task is likely to be a scenario requiring a strategic and operational response. It might be about attendance, SEND provision, curriculum underperformance, behaviour, or a data-driven challenge. Whatever it is, the structure is the same.
+
+Use this framework: Context — what is the situation and what do you understand about it? Key Issue — what is the root cause, not just the symptom? Immediate Actions — what do you do in the first 48 hours? Medium-Term Actions — what do you build over the next term? Risks — what could go wrong and how do you mitigate it? Success Measures — how will you know it's working?
+
+Write with strategic clarity and operational specificity. Don't be vague. Don't just describe good leadership — demonstrate it through the precision of your actions. Use evidence where you can: EEF guidance, attendance research, the SEND white paper.
+
+And remember — think Deputy, not consultant. You are not recommending to someone else. You are the person in the building who will do this. Use "I would" not "schools should." Own the work.
+
+Spend the first five minutes reading and planning. The last five minutes reviewing. Write fast but structured in the middle.
+
+You've written school improvement plans, whole-school review reports, cross-federation strategy documents. This is the same skill set. Trust it.</div>
+  </div>
+
+  <div class="card gold">
+    <h3>Your written task structure</h3>
+    <ul>
+      <li><strong>Context:</strong> Situation and understanding</li>
+      <li><strong>Key Issue:</strong> Root cause, not symptom</li>
+      <li><strong>Immediate Actions:</strong> First 48 hours — specific and named</li>
+      <li><strong>Medium-Term Actions:</strong> Next term — systemic and sustainable</li>
+      <li><strong>Risks:</strong> What could go wrong + mitigation</li>
+      <li><strong>Success Measures:</strong> How you'll know it's working</li>
+    </ul>
+  </div>
+
+  <div class="card amber">
+    <h3>Likely scenario themes — preparation notes</h3>
+    <ul>
+      <li><strong>Attendance:</strong> Relationships + accountability + targeted support + data. Mention EEF — attendance correlates directly with progress. Early intervention, not just authorisation chasing.</li>
+      <li><strong>SEND:</strong> Graduated response, adaptive teaching, individual support plans, the February 2026 white paper direction. Mainstream first.</li>
+      <li><strong>Curriculum underperformance:</strong> Data triangulation, coaching cycle, CPD, departmental review — not blame.</li>
+      <li><strong>Behaviour:</strong> Restorative approaches, clear boundaries, trauma-informed awareness, consistency across staff.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>Language that shows strategic thinking</h3>
+    <ul>
+      <li>"My first step would be to understand the data behind..." (not just react)</li>
+      <li>"I'd distinguish between the presenting issue and the root cause..."</li>
+      <li>"The research is clear that... and our approach should reflect that."</li>
+      <li>"Success would look like... measured by..."</li>
+      <li>"The risk here is... and I'd mitigate by..."</li>
+    </ul>
+  </div>
+
+  <div class="affirmation">
+    <p>You have written whole-school improvement plans, cross-federation strategy documents, and improvement reviews across 50 academies. <strong>This is your comfort zone.</strong> Write with the confidence of someone who has done this before — because you have.</p>
+  </div>
+
+</div>
+
+</main>
+
+<script>
+// ── NAVIGATION ───────────────────────────────────────────────────
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const btns = document.querySelectorAll('nav button');
+  btns.forEach(b => { if (b.getAttribute('onclick').includes(`'${id}'`)) b.classList.add('active'); });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── Q&A TOGGLE ───────────────────────────────────────────────────
+function toggleQA(el) {
+  const answer = el.nextElementSibling;
+  const chevron = el.querySelector('.qa-chevron');
+  const isOpen = answer.classList.contains('open');
+  answer.classList.toggle('open', !isOpen);
+  chevron.style.transform = isOpen ? '' : 'rotate(180deg)';
+}
+
+// ── SCRIPT TOGGLE ────────────────────────────────────────────────
+function toggleScript(id) {
+  const el = document.getElementById(id);
+  el.classList.toggle('visible');
+}
+
+// ── SPEECH SYNTHESIS ─────────────────────────────────────────────
+let currentUtterance = null;
+let currentProgressInterval = null;
+let currentProgressEl = null;
+
+function speakText(scriptId, btn) {
+  const scriptEl = document.getElementById(scriptId);
+  if (!scriptEl) return;
+  const text = scriptEl.textContent.trim();
+  if (!text) return;
+
+  // Stop any current speech
+  if (window.speechSynthesis.speaking) {
+    window.speechSynthesis.cancel();
+    if (currentProgressInterval) clearInterval(currentProgressInterval);
+    if (currentProgressEl) currentProgressEl.style.width = '0%';
+    if (btn.dataset.speaking === 'true') {
+      btn.innerHTML = '▶';
+      btn.dataset.speaking = '';
+      return;
+    }
+  }
+
+  const sectionId = scriptId.replace('-script', '');
+  const progressEl = document.getElementById(sectionId + '-progress');
+  currentProgressEl = progressEl;
+
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.rate = 0.88;
+  utterance.pitch = 0.95;
+  utterance.volume = 1;
+
+  // Try to find a British male voice
+  const voices = window.speechSynthesis.getVoices();
+  const preferred = voices.find(v =>
+    (v.lang === 'en-GB' && v.name.toLowerCase().includes('male')) ||
+    v.name.toLowerCase().includes('daniel') ||
+    v.name.toLowerCase().includes('oliver') ||
+    (v.lang === 'en-GB' && !v.name.toLowerCase().includes('female'))
+  ) || voices.find(v => v.lang === 'en-GB') || voices.find(v => v.lang.startsWith('en'));
+
+  if (preferred) utterance.voice = preferred;
+
+  // Animate progress bar
+  const estimatedDuration = (text.split(' ').length / 140) * 60 * 1000;
+  let elapsed = 0;
+  if (progressEl) progressEl.style.width = '0%';
+
+  currentProgressInterval = setInterval(() => {
+    elapsed += 200;
+    const pct = Math.min(95, (elapsed / estimatedDuration) * 100);
+    if (progressEl) progressEl.style.width = pct + '%';
+  }, 200);
+
+  utterance.onend = () => {
+    clearInterval(currentProgressInterval);
+    if (progressEl) progressEl.style.width = '100%';
+    setTimeout(() => { if (progressEl) progressEl.style.width = '0%'; }, 1500);
+    btn.innerHTML = '▶';
+    btn.dataset.speaking = '';
+  };
+
+  utterance.onerror = () => {
+    clearInterval(currentProgressInterval);
+    btn.innerHTML = '▶';
+    btn.dataset.speaking = '';
+  };
+
+  btn.innerHTML = '⏸';
+  btn.dataset.speaking = 'true';
+  currentUtterance = utterance;
+  window.speechSynthesis.speak(utterance);
+}
+
+// Ensure voices are loaded
+window.speechSynthesis.onvoiceschanged = () => {};
+window.speechSynthesis.getVoices();
+</script>
+
+</body>
+</html>
